@@ -5,12 +5,14 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Jcc\LaravelVote\Vote;
 
 
 class User extends Authenticatable
 {
     use Notifiable;
     use HasRoles;
+    use Vote;
 
     /**
      * The attributes that are mass assignable.

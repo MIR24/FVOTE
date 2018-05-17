@@ -16,3 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/users', 'UserApiController@index')->name('apiUsersIndex');
+Route::get('/nominations', 'NominationApiController@index')->name('apiNominationsIndex');
+Route::get('/nominations/{id}/works', 'WorkApiController@indexByNomination')->where('id', '[0-9]+')->name('apiWorksIndexByNomination');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -20,7 +21,21 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('datatables.users');
+        $layout = 'admin.layouts.app';
+        $view = 'admin.datatables.users';
+
+        $user = Auth::user();
+        if (!$user->getRoleNames()->contains('admin')) {
+            return redirect('/');
+        }
+
+        return view(
+            $view,
+            [
+                'layout' => $layout,
+                'title' => 'Пользователи'
+            ]
+        );
     }
 
     /**

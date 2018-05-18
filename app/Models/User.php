@@ -7,7 +7,6 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Jcc\LaravelVote\Vote;
 
-
 class User extends Authenticatable
 {
     use Notifiable;
@@ -20,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'filial', 'note', 'status'
     ];
 
     /**

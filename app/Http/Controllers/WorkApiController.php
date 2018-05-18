@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\CompetitiveWork;
 use App\Nomination;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Auth;
 
 class WorkApiController extends Controller
 {
@@ -24,12 +25,20 @@ class WorkApiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexByNomination(Request $request, $id)
+    public function indexByNomination($id)
     {
+        $user = Auth::user();
         $nomination = Nomination::findOrFail($id);
-        $builder = $nomination->competitiveWorks()->select('id', 'filial', 'name', 'url', 'correspondent', 'operator')
-            ->take(config('default.limit'));
-        return Datatables::of($builder)->make(true);
+        $builder = $nomination->competitiveWorks()->select('id', 'filial', 'name', 'url', 'correspondent', 'operator');
+        return Datatables::of($builder)
+            ->addColumn('action', function ($work) use ($id) {
+                return '<a href="'.route('workThumbsUp', [$id, $work->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-thumbs-up"></i> Нравится</a>';
+            })
+            ->setRowClass(function ($work) use ($user) {
+                return $user->hasUpVoted($work) ? 'bg-success' : '';
+            })
+            ->rawColumns(['url', 'action'])
+            ->make(true);
     }
 
     /**

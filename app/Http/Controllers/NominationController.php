@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Nomination;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Auth;
+use Kris\LaravelFormBuilder\FormBuilder;
+use Kris\LaravelFormBuilder\FormBuilderTrait;
 
 class NominationController extends Controller
 {
+    use FormBuilderTrait;
 
     public function __construct()
     {
@@ -21,7 +25,20 @@ class NominationController extends Controller
      */
     public function index()
     {
-        return view('datatables.nominations');
+        $layout = 'user.layouts.app';
+        $view = 'user.datatables.nominations';
+        $user = Auth::user();
+        if ($user->getRoleNames()->contains('admin')) {
+            $layout = 'admin.layouts.app';
+            $view = 'admin.datatables.nominations';
+        }
+        return view(
+            $view,
+            [
+                'layout' => $layout,
+                'title' => 'Номинации'
+            ]
+        );
     }
 
     /**
@@ -29,9 +46,14 @@ class NominationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(FormBuilder $formBuilder)
     {
-        //
+        $form = $formBuilder->create('App\Forms\NominationForm', [
+            'method' => 'POST',
+            'url' => route('nominationsStore')
+        ]);
+
+        return view('admin.forms.nominationCreate', compact('form'));
     }
 
     /**
@@ -40,9 +62,20 @@ class NominationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, FormBuilder $formBuilder)
     {
-        //
+        $form = $this->form(\App\Forms\NominationForm::class);
+
+        // It will automatically use current request, get the rules, and do the validation
+        if (!$form->isValid()) {
+            return redirect()->back()->withErrors($form->getErrors())->withInput();
+        }
+
+        // Or automatically redirect on error. This will throw an HttpResponseException with redirect
+        $form->redirectIfNotValid();
+
+        Nomination::create($form->getFieldValues());
+        return redirect()->route('nominationsIndex');
     }
 
     /**

@@ -11,7 +11,7 @@
     <title>{{ config('meta.title', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
     <!-- jQuery -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- DataTables -->
@@ -27,7 +27,7 @@
     @stack('fonts')
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
     @stack('styles')
 </head>
@@ -36,7 +36,7 @@
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('meta.title', 'Laravel') }}
+                    {{ $title ?? config('meta.title', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -52,20 +52,15 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         @guest
-                            <li><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></li>
+                            <li><a class="nav-link" href="{{ route('login') }}">{{ __('Авторизация') }}</a></li>
                         @else
-                            @can('edit users')
-                                <li><a class="nav-link" href="{{ route('usersIndex') }}">{{ __('Пользователи') }}</a></li>
-                            @endcan
-                            @can('edit users')
-                                <li><a class="nav-link" href="{{ route('nominationsIndex') }}">{{ __('Номинации') }}</a></li>
-                            @endcan
-                            @can('edit users')
-                                <li><a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a></li>
-                            @endcan
+                            <li><a class="nav-link" href="{{ route('nominationsIndex') }}">{{ __('Номинации') }}</a></li>
+                            <li><a class="nav-link" href="{{ route('usersIndex') }}">{{ __('Пользователи') }}</a></li>
+                            <li><a class="nav-link" href="{{ route('register') }}">{{ __('Регистрация') }}</a></li>
                             <li class="nav-item dropdown">
+                                @php $user = Auth::user() @endphp
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                    {{ $user->getRoleNames()->first().'@'.$user->name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">

@@ -15,7 +15,7 @@ class UserApiController extends Controller
      */
     public function index()
     {
-        $builder = User::select(['id', 'name', 'email', 'created_at', 'updated_at'])->take(config('default.limit'));
+        $builder = User::select(['id', 'created_at', 'updated_at', 'name', 'email', 'status', 'filial', 'note']);
         return Datatables::of($builder)->make(true);
     }
 

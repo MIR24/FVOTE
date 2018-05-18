@@ -29,7 +29,7 @@ $(function() {
         fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
             // Row click
             $(nRow).on('click', function() {
-                window.location.href = window.location.href+aData.id+'/works';
+                window.location.href = window.location.href+'/'+aData.id+'/works';
             });
         }
     });

@@ -94,7 +94,7 @@ class NominationController extends Controller
             'url' => route('nominations.store')
         ]);
 
-        return view('admin.forms.nomination.create', compact('form'));
+        return view('admin.forms.nominationCreate', compact('form'));
     }
 
     /**

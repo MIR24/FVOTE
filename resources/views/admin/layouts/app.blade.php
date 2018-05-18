@@ -54,9 +54,8 @@
                         @guest
                             <li><a class="nav-link" href="{{ route('login') }}">{{ __('Авторизация') }}</a></li>
                         @else
-                            <li><a class="nav-link" href="{{ route('nominationsIndex') }}">{{ __('Номинации') }}</a></li>
-                            <li><a class="nav-link" href="{{ route('usersIndex') }}">{{ __('Пользователи') }}</a></li>
-                            <li><a class="nav-link" href="{{ route('register') }}">{{ __('Регистрация') }}</a></li>
+                            <li><a class="nav-link" href="{{ route('nominations.index') }}">{{ __('Номинации') }}</a></li>
+                            <li><a class="nav-link" href="{{ route('users.index') }}">{{ __('Пользователи') }}</a></li>
                             <li class="nav-item dropdown">
                                 @php $user = Auth::user() @endphp
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

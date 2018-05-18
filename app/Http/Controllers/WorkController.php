@@ -50,6 +50,33 @@ class WorkController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexByNominationDT($id)
+    {
+        $user = Auth::user();
+        $nomination = Nomination::findOrFail($id);
+        $builder = $nomination->competitiveWorks()->select('id', 'filial', 'name', 'url', 'correspondent', 'operator');
+        return Datatables::of($builder)
+            ->addColumn('action', function ($work) use ($id) {
+                return '<a href="'.route('works.thumbsUp', [$id, $work->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-thumbs-up"></i> Нравится</a>';
+            })
+            ->addColumn('edit', function ($work) {
+                return '<a href="'.route('works.edit', [$work->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
+            })
+            ->addColumn('votes', function ($work) {
+                return $work->countUpVoters();
+            })
+            ->setRowClass(function ($work) use ($user) {
+                return $user->hasUpVoted($work) ? 'bg-success' : '';
+            })
+            ->rawColumns(['url', 'action', 'edit'])
+            ->make(true);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -58,7 +85,7 @@ class WorkController extends Controller
     {
         $form = $formBuilder->create('App\Forms\WorkForm', [
             'method' => 'POST',
-            'url' => route('worksStore')
+            'url' => route('works.store')
         ]);
 
         return view('admin.forms.workCreate', compact('form'));
@@ -83,7 +110,7 @@ class WorkController extends Controller
         $form->redirectIfNotValid();
 
         CompetitiveWork::create($form->getFieldValues());
-        return redirect()->route('nominationsIndex');
+        return redirect()->route('nominations.index');
     }
 
     /**

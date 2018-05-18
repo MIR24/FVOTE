@@ -24,7 +24,7 @@ $(function() {
     $('#works-by-nomination-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: '{!! route('apiWorksIndexByNomination', ['id' => $model->id]) !!}',
+        ajax: '{!! route('api.works.indexByNomination', ['id' => $model->id]) !!}',
         columns: [
             { data: 'id', name: 'id' },
             { data: 'filial', name: 'filial' },

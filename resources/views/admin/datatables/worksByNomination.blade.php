@@ -1,7 +1,7 @@
 @extends($layout)
 
 @section('content')
-    <a href="{{ route('worksCreate') }}" class="btn btn-primary float-right" role="button">Создать</a>
+    <a href="{{ route('works.create') }}" class="btn btn-primary float-right" role="button">Создать</a>
     <table class="table table-bordered" id="works-by-nomination-table">
         <thead>
             <tr>
@@ -11,9 +11,8 @@
                 <th>Ссылка на сюжет</th>
                 <th>Корреспондент</th>
                 <th>Оператор</th>
-                @if ($model->status == 'active')
                 <th>Голоса</th>
-                @endif
+                <th>Действие</th>
             </tr>
         </thead>
     </table>
@@ -25,15 +24,16 @@ $(function() {
     $('#works-by-nomination-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: '{!! route('apiWorksIndexByNomination', ['id' => $model->id]) !!}',
+        ajax: '{!! route('api.works.indexByNomination', ['id' => $model->id]) !!}',
         columns: [
             { data: 'id', name: 'id' },
             { data: 'filial', name: 'filial' },
             { data: 'name', name: 'name' },
             { data: 'url', name: 'url' },
             { data: 'correspondent', name: 'correspondent' },
-            { data: 'operator', name: 'operator' } @if ($model->status == 'active'),
-            { data: 'action', name: 'action', orderable: false, searchable: false } @endif
+            { data: 'operator', name: 'operator' },
+            { data: 'votes', name: 'votes', orderable: false, searchable: false },
+            { data: 'edit', name: 'edit', orderable: false, searchable: false }
         ]
     });
 });

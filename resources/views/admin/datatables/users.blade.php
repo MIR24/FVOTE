@@ -24,7 +24,7 @@ $(function() {
     $('#users-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: '{!! route('apiUsersIndex') !!}',
+        ajax: '{!! route('api.users.index') !!}',
         columns: [
             { data: 'id', name: 'id' },
             { data: 'created_at', name: 'created_at' },

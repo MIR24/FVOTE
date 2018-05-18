@@ -42,6 +42,47 @@ class NominationController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexDT()
+    {
+        $user = Auth::user();
+        $builder = Nomination::select([
+            'id',
+            'from_time',
+            'to_time',
+            'name',
+            'status'
+        ]);
+        if (!$user->getRoleNames()->contains('admin')) {
+            $builder->where('status', 'active');
+        }
+
+        return Datatables::of($builder)
+            ->addColumn('votes', function ($nomination) {
+                $count = 0;
+                foreach ($nomination->competitiveWorks as $work) {
+                    $count += $work->countUpVoters();
+                }
+                return $count;
+            })
+            ->addColumn('action', function ($nomination) {
+                return '<a href="'.route('nominations.edit', [$nomination->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
+            })
+            ->setRowClass(function ($nomination) use ($user) {
+                foreach ($nomination->competitiveWorks as $work) {
+                    if ($user->hasUpVoted($work)) {
+                        return 'bg-success';
+                    }
+                }
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -50,10 +91,10 @@ class NominationController extends Controller
     {
         $form = $formBuilder->create('App\Forms\NominationForm', [
             'method' => 'POST',
-            'url' => route('nominationsStore')
+            'url' => route('nominations.store')
         ]);
 
-        return view('admin.forms.nominationCreate', compact('form'));
+        return view('admin.forms.nomination.create', compact('form'));
     }
 
     /**
@@ -75,7 +116,7 @@ class NominationController extends Controller
         $form->redirectIfNotValid();
 
         Nomination::create($form->getFieldValues());
-        return redirect()->route('nominationsIndex');
+        return redirect()->route('nominations.index');
     }
 
     /**

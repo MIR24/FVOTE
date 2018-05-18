@@ -13,26 +13,27 @@
 /*Route::get('/', function () {
     return view('home'); // welcome
 });*/
+Route::redirect('/', '/nominations', 301);
 
-Route::get('/users', 'UserController@index')->name('usersIndex');
-Route::get('/', 'NominationController@index')->name('nominationsIndex');
-Route::get('/{id}', 'NominationController@show')->where('id', '[0-9]+')->name('nominationsShow');
-Route::get('/{id}/works', 'WorkController@indexByNomination')->where('id', '[0-9]+')->name('worksIndexByNomination');
-Route::get('/{nId}/works/{wId}/thumbsup', 'WorkController@thumbsUp')
-    ->where(['nid' => '[0-9]+', 'wId' => '[0-9]+'])
-    ->name('workThumbsUp');
-Route::get('/create', 'NominationController@create')->name('nominationsCreate');
-Route::post('/', 'NominationController@store')->name('nominationsStore');
-Route::get('/works/create', 'WorkController@create')->name('worksCreate');
-Route::post('/works', 'WorkController@store')->name('worksStore');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/nominations/{id}/works', 'WorkController@indexByNomination')
+        ->where('id', '[0-9]+')
+        ->name('works.indexByNomination');
+    Route::get('/nominations/{nId}/works/{wId}/thumbsup', 'WorkController@thumbsUp')
+        ->where(['nid' => '[0-9]+', 'wId' => '[0-9]+'])
+        ->name('works.thumbsUp');
 
-Route::get('/api/users', 'UserApiController@index')->name('apiUsersIndex');
-Route::get('/api/nominations', 'NominationApiController@index')->name('apiNominationsIndex');
-Route::get('/api/nominations/{id}/works', 'WorkApiController@indexByNomination')
-    ->where('id', '[0-9]+')
-    ->name('apiWorksIndexByNomination');
+    Route::get('/api/users', 'UserController@indexDT')
+        ->name('api.users.index');
+    Route::get('/api/nominations', 'NominationController@indexDT')
+        ->name('api.nominations.index');
+    Route::get('/api/nominations/{id}/works', 'WorkController@indexByNominationDT')
+        ->where('id', '[0-9]+')
+        ->name('api.works.indexByNomination');
 
+    Route::resource('users', 'UserController');
+    Route::resource('nominations', 'NominationController');
+    Route::resource('works', 'WorkController');
+});
 
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');

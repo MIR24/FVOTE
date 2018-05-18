@@ -19,7 +19,7 @@ $(function() {
     $('#nominations-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: '{!! route('apiNominationsIndex') !!}',
+        ajax: '{!! route('api.nominations.index') !!}',
         columns: [
             { data: 'id', name: 'id' },
             { data: 'from_time', name: 'from_time' },

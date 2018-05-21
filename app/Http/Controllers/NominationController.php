@@ -94,7 +94,12 @@ class NominationController extends Controller
             'url' => route('nominations.store')
         ]);
 
-        return view('admin.forms.nominationCreate', compact('form'));
+        $params = [
+            'form' => $form,
+            'cardHeader' => 'Создание Номинации'
+        ];
+
+        return view('admin.forms.default', $params);
     }
 
     /**
@@ -103,7 +108,7 @@ class NominationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, FormBuilder $formBuilder)
+    public function store(Request $request)
     {
         $form = $this->form(\App\Forms\NominationForm::class);
 
@@ -136,9 +141,21 @@ class NominationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, FormBuilder $formBuilder)
     {
-        //
+        $model = Nomination::findOrFail($id);
+        $form = $formBuilder->create('App\Forms\NominationForm', [
+            'method' => 'POST',
+            'url' => route('nominations.update'),
+            'model' => $model,
+        ]);
+
+        $params = [
+            'form' => $form,
+            'cardHeader' => 'Редактирование Номинации'
+        ];
+
+        return view('admin.forms.default', $params);
     }
 
     /**

@@ -72,6 +72,9 @@ class WorkController extends Controller
             ->setRowClass(function ($work) use ($user) {
                 return $user->hasUpVoted($work) ? 'bg-success' : '';
             })
+            ->editColumn('url', function ($work) {
+                return $work->link;
+            })
             ->rawColumns(['url', 'action', 'edit'])
             ->make(true);
     }
@@ -88,7 +91,12 @@ class WorkController extends Controller
             'url' => route('works.store')
         ]);
 
-        return view('admin.forms.workCreate', compact('form'));
+        $params = [
+            'form' => $form,
+            'cardHeader' => 'Создание Работы'
+        ];
+
+        return view('admin.forms.default', $params);
     }
 
     /**
@@ -97,7 +105,7 @@ class WorkController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, FormBuilder $formBuilder)
+    public function store(Request $request)
     {
         $form = $this->form(\App\Forms\WorkForm::class);
 
@@ -130,9 +138,21 @@ class WorkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, FormBuilder $formBuilder)
     {
-        //
+        $model = CompetitiveWork::findOrFail($id);
+        $form = $formBuilder->create('App\Forms\WorkForm', [
+            'method' => 'PUT',
+            'url' => route('works.update', [$id]),
+            'model' => $model,
+        ]);
+
+        $params = [
+            'form' => $form,
+            'cardHeader' => 'Редактирование Работы'
+        ];
+
+        return view('admin.forms.default', $params);
     }
 
     /**
@@ -144,7 +164,21 @@ class WorkController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $form = $this->form(\App\Forms\WorkForm::class);
+
+        // It will automatically use current request, get the rules, and do the validation
+        if (!$form->isValid()) {
+            return redirect()->back()->withErrors($form->getErrors())->withInput();
+        }
+
+        // Or automatically redirect on error. This will throw an HttpResponseException with redirect
+        $form->redirectIfNotValid();
+
+        $model = CompetitiveWork::findOrFail($id);
+
+        $model->update($form->getFieldValues());
+
+        return redirect()->route('nominations.index');
     }
 
     /**

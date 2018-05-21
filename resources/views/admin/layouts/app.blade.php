@@ -59,7 +59,7 @@
                             <li class="nav-item dropdown">
                                 @php $user = Auth::user() @endphp
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ $user->getRoleNames()->first().'@'.$user->name }} <span class="caret"></span>
+                                    {{ __($user->getRoleNames()->first()).'@'.$user->name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">

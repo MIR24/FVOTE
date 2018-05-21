@@ -6,9 +6,14 @@ use Illuminate\Http\Request;
 use App\User;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Kris\LaravelFormBuilder\FormBuilder;
+use Kris\LaravelFormBuilder\FormBuilderTrait;
 
 class UserController extends Controller
 {
+    use FormBuilderTrait;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -87,9 +92,21 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, FormBuilder $formBuilder)
     {
-        //
+        $model = User::select(['id', 'name', 'email', 'filial', 'note', 'status'])->findOrFail($id);
+        $model->role = $model->getRoleNames()->first();
+        $form = $formBuilder->create('App\Forms\UserForm', [
+            'method' => 'PUT',
+            'url' => route('users.update', [$id]),
+            'model' => $model,
+        ]);
+        $params = [
+            'form' => $form,
+            'cardHeader' => 'Редактирование Пользователя'
+        ];
+
+        return view('admin.forms.default', $params);
     }
 
     /**
@@ -101,7 +118,23 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $form = $this->form(\App\Forms\UserForm::class);
+
+        // It will automatically use current request, get the rules, and do the validation
+        if (!$form->isValid()) {
+            return redirect()->back()->withErrors($form->getErrors())->withInput();
+        }
+
+        // Or automatically redirect on error. This will throw an HttpResponseException with redirect
+        $form->redirectIfNotValid();
+
+        $model = User::findOrFail($id);
+
+        $data = $form->getFieldValues();
+        $model->update($data);
+        $model->syncRoles([$data['role']]);
+
+        return redirect()->route('users.index');
     }
 
     /**

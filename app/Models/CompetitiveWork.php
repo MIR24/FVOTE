@@ -32,8 +32,8 @@ class CompetitiveWork extends Model
         return $this->hasManyThrough('App\Competition', 'App\Nomination');
     }
 
-    public function getUrlAttribute($value)
+    public function getLinkAttribute()
     {
-        return "<a href='{$value}' target='_blank'>{$value}</a>";
+        return "<a href='{$this->url}' target='_blank'>{$this->url}</a>";
     }
 }

@@ -93,12 +93,35 @@
                             <label for="status" class="col-md-4 col-form-label text-md-right">{{ __('Status') }}</label>
 
                             <div class="col-md-6">
-                                <label class="radio-inline"><input type="radio" name="status" value="inactive">Неактивен</label>
-                                <label class="radio-inline"><input type="radio" name="status" value="active">Активен</label>
+                                <div class="choice-wrapper">
+                                    <input id="status_inactive" name="status" type="radio" value="inactive">
+                                    <label for="status_inactive" class="label-class">Неактивен</label>
+                                </div>
+                                <div class="choice-wrapper">
+                                    <input id="status_active" checked="checked" name="status" type="radio" value="active">
+                                    <label for="status_active" class="label-class">Активен</label>
+                                </div>
 
                                 @if ($errors->has('status'))
                                     <span class="invalid-feedback">
                                         <strong>{{ $errors->first('status') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="role" class="col-md-4 col-form-label text-md-right">{{ __('Role') }}</label>
+
+                            <div class="col-md-6">
+                                <select class="form-control" required="required" id="role" name="role">
+                                    <option value="user" selected="selected">Пользователь</option>
+                                    <option value="admin">Админ</option>
+                                </select>
+
+                                @if ($errors->has('role'))
+                                    <span class="invalid-feedback">
+                                        <strong>{{ $errors->first('role') }}</strong>
                                     </span>
                                 @endif
                             </div>

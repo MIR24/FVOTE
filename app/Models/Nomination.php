@@ -4,11 +4,21 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Nomination extends Model
 {
     use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'from_time', 'to_time'];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'status', 'from_time', 'to_time'
+    ];
 
     public function competitions()
     {
@@ -18,5 +28,27 @@ class Nomination extends Model
     public function competitiveWorks()
     {
         return $this->belongsToMany('App\CompetitiveWork');
+    }
+
+     /**
+     * Set from_time attribute.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setFromTimeAttribute($value)
+    {
+        $this->attributes['from_time'] =  Carbon::createFromFormat('Y-m-d\Th:m:s', $value);
+    }
+
+     /**
+     * Set to_time attribute.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setToTimeAttribute($value)
+    {
+        $this->attributes['to_time'] =  Carbon::createFromFormat('Y-m-d\Th:m:s', $value);
     }
 }

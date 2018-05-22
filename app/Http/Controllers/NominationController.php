@@ -8,6 +8,7 @@ use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Auth;
 use Kris\LaravelFormBuilder\FormBuilder;
 use Kris\LaravelFormBuilder\FormBuilderTrait;
+use Carbon\Carbon;
 
 class NominationController extends Controller
 {
@@ -61,18 +62,18 @@ class NominationController extends Controller
         }
 
         return Datatables::of($builder)
-            ->addColumn('votes', function ($nomination) {
+            ->addColumn('votes', function ($model) {
                 $count = 0;
-                foreach ($nomination->competitiveWorks as $work) {
+                foreach ($model->competitiveWorks as $work) {
                     $count += $work->countUpVoters();
                 }
                 return $count;
             })
-            ->addColumn('action', function ($nomination) {
-                return '<a href="'.route('nominations.edit', [$nomination->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
+            ->addColumn('action', function ($model) {
+                return '<a href="'.route('nominations.edit', [$model->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
             })
-            ->setRowClass(function ($nomination) use ($user) {
-                foreach ($nomination->competitiveWorks as $work) {
+            ->setRowClass(function ($model) use ($user) {
+                foreach ($model->competitiveWorks as $work) {
                     if ($user->hasUpVoted($work)) {
                         return 'bg-success';
                     }
@@ -144,9 +145,10 @@ class NominationController extends Controller
     public function edit($id, FormBuilder $formBuilder)
     {
         $model = Nomination::findOrFail($id);
+        Carbon::setToStringFormat('Y-m-d\Th:m:s');
         $form = $formBuilder->create('App\Forms\NominationForm', [
-            'method' => 'POST',
-            'url' => route('nominations.update'),
+            'method' => 'PUT',
+            'url' => route('nominations.update', [$id]),
             'model' => $model,
         ]);
 
@@ -167,7 +169,21 @@ class NominationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $form = $this->form(\App\Forms\NominationForm::class);
+
+        // It will automatically use current request, get the rules, and do the validation
+        if (!$form->isValid()) {
+            return redirect()->back()->withErrors($form->getErrors())->withInput();
+        }
+
+        // Or automatically redirect on error. This will throw an HttpResponseException with redirect
+        $form->redirectIfNotValid();
+
+        $model = Nomination::findOrFail($id);
+
+        $model->update($form->getFieldValues());
+
+        return redirect()->route('nominations.index');
     }
 
     /**

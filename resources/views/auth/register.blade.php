@@ -115,8 +115,14 @@
 
                             <div class="col-md-6">
                                 <select class="form-control" required="required" id="role" name="role">
-                                    <option value="user" selected="selected">Пользователь</option>
-                                    <option value="admin">Админ</option>
+                                    @foreach (
+                                        Spatie\Permission\Models\Role::select(['name'])
+                                        ->take(config('default.limit'))
+                                        ->get()
+                                        as $role
+                                    )
+                                        <option value="{{ $role->name }}" selected="selected">{{ __($role->name) }}</option>
+                                    @endforeach
                                 </select>
 
                                 @if ($errors->has('role'))

@@ -13,6 +13,7 @@
                 <th>Статус</th>
                 <th>Филиал</th>
                 <th>Заметка</th>
+                <th>Действие</th>
             </tr>
         </thead>
     </table>
@@ -33,7 +34,8 @@ $(function() {
             { data: 'email', name: 'email' },
             { data: 'status', name: 'status' },
             { data: 'filial', name: 'filial' },
-            { data: 'note', name: 'note' }
+            { data: 'note', name: 'note' },
+            { data: 'action', name: 'action', orderable: false, searchable: false }
         ]
     });
 });

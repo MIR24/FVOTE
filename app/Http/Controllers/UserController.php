@@ -26,13 +26,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        $layout = 'admin.layouts.app';
-        $view = 'admin.datatables.users';
-
         $user = Auth::user();
         if (!$user->getRoleNames()->contains('admin')) {
             return redirect('/');
         }
+
+        $layout = 'admin.layouts.app';
+        $view = 'admin.datatables.users';
 
         return view(
             $view,
@@ -51,7 +51,12 @@ class UserController extends Controller
     public function indexDT()
     {
         $builder = User::select(['id', 'created_at', 'updated_at', 'name', 'email', 'status', 'filial', 'note']);
-        return Datatables::of($builder)->make(true);
+        return Datatables::of($builder)
+            ->addColumn('action', function ($model) {
+                return '<a href="'.route('users.edit', [$model->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
     /**

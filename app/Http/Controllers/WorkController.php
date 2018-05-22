@@ -21,7 +21,49 @@ class WorkController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        if (!$user->getRoleNames()->contains('admin')) {
+            return redirect('/');
+        }
+
+        $layout = 'admin.layouts.app';
+        $view = 'admin.datatables.works';
+
+        return view(
+            $view,
+            [
+                'layout' => $layout,
+                'title' => 'Работы'
+            ]
+        );
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexDT()
+    {
+        $user = Auth::user();
+        $builder = CompetitiveWork::select([
+            'id',
+            'filial',
+            'name',
+            'url',
+            'correspondent',
+            'operator'
+        ]);
+
+        return Datatables::of($builder)
+            ->addColumn('edit', function ($work) {
+                return '<a href="'.route('works.edit', [$work->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
+            })
+            ->editColumn('url', function ($work) {
+                return $work->link;
+            })
+            ->rawColumns(['url', 'action', 'edit'])
+            ->make(true);
     }
 
     /**
@@ -117,7 +159,14 @@ class WorkController extends Controller
         // Or automatically redirect on error. This will throw an HttpResponseException with redirect
         $form->redirectIfNotValid();
 
-        CompetitiveWork::create($form->getFieldValues());
+        $data = $form->getFieldValues();
+        $model = CompetitiveWork::create($data);
+        if ($data['nomimation'] > 0) {
+            $model->nominations()->sync([$data['nomimation']]);
+        } else {
+            $model->nominations()->sync();
+        }
+
         return redirect()->route('nominations.index');
     }
 
@@ -176,7 +225,13 @@ class WorkController extends Controller
 
         $model = CompetitiveWork::findOrFail($id);
 
-        $model->update($form->getFieldValues());
+        $data = $form->getFieldValues();
+        $model->update($data);
+        if ($data['nomimation'] > 0) {
+            $model->nominations()->sync([$data['nomimation']]);
+        } else {
+            $model->nominations()->sync();
+        }
 
         return redirect()->route('nominations.index');
     }

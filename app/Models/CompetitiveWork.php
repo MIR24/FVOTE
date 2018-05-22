@@ -13,6 +13,7 @@ class CompetitiveWork extends Model
 
     protected $vote = User::class;
     protected $dates = ['deleted_at'];
+
     /**
      * The attributes that are mass assignable.
      *

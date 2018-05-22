@@ -3,11 +3,19 @@
 namespace App\Forms;
 
 use Kris\LaravelFormBuilder\Form;
+use Spatie\Permission\Models\Role;
 
 class UserForm extends Form
 {
     public function buildForm()
     {
+        $collection = Role::select(['name'])
+            ->take(config('default.limit'))
+            ->get();
+        $choices = [];
+        foreach ($collection as $model) {
+            $choices[$model->name] = __($model->name);
+        }
         $this
             ->add('name', 'text', ['label' => 'Имя', 'rules' => 'required|string|max:255'])
             ->add('email', 'text', ['label' => 'E-Mail Адрес', 'rules' => 'required|string|email|max:255'])
@@ -24,7 +32,7 @@ class UserForm extends Form
                 'expanded' => true
             ])
             ->add('role', 'choice', [
-                'choices' => ['user' => 'Пользователь', 'admin' => 'Админ'],
+                'choices' => $choices,
                 'choice_options' => [
                     'wrapper' => ['class' => 'choice-wrapper'],
                     'label_attr' => ['class' => 'label-class'],

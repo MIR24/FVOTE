@@ -38,7 +38,9 @@ class Nomination extends Model
      */
     public function setFromTimeAttribute($value)
     {
-        $this->attributes['from_time'] =  Carbon::createFromFormat('Y-m-d\Th:m:s', $value);
+        if ($value) {
+            $this->attributes['from_time'] =  Carbon::createFromFormat('Y-m-d\Th:m', $value);
+        }
     }
 
      /**
@@ -49,6 +51,8 @@ class Nomination extends Model
      */
     public function setToTimeAttribute($value)
     {
-        $this->attributes['to_time'] =  Carbon::createFromFormat('Y-m-d\Th:m:s', $value);
+        if ($value) {
+            $this->attributes['to_time'] =  Carbon::createFromFormat('Y-m-d\Th:m', $value);
+        }
     }
 }

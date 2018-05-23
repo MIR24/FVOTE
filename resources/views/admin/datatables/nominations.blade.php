@@ -1,7 +1,9 @@
 @extends($layout)
 
 @section('content')
-    <a href="{{ route('nominations.create') }}" class="btn btn-primary float-right" role="button">Создать</a>
+    <div class="col-md-12 text-center">
+        <a href="{{ route('nominations.create') }}" class="btn btn-primary" role="button">Создать</a>
+    </div>
     <table class="table table-bordered" id="nominations-table">
         <thead>
             <tr>

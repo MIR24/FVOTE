@@ -26,11 +26,11 @@ class NominationController extends Controller
      */
     public function index()
     {
-        $layout = 'user.layouts.app';
+        $layout = 'user.layouts.appnew';
         $view = 'user.datatables.nominations';
         $user = Auth::user();
         if ($user->getRoleNames()->contains('admin')) {
-            $layout = 'admin.layouts.app';
+            $layout = 'admin.layouts.appnew';
             $view = 'admin.datatables.nominations';
         }
         return view(
@@ -70,7 +70,7 @@ class NominationController extends Controller
                 return $count;
             })
             ->addColumn('action', function ($model) {
-                return '<a href="'.route('nominations.edit', [$model->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
+                return $model->id;
             })
             ->setRowClass(function ($model) use ($user) {
                 foreach ($model->competitiveWorks as $work) {
@@ -145,7 +145,7 @@ class NominationController extends Controller
     public function edit($id, FormBuilder $formBuilder)
     {
         $model = Nomination::findOrFail($id);
-        Carbon::setToStringFormat('Y-m-d\Th:m:s');
+        Carbon::setToStringFormat('Y-m-d\TH:i');
         $form = $formBuilder->create('App\Forms\NominationForm', [
             'method' => 'PUT',
             'url' => route('nominations.update', [$id]),
@@ -170,7 +170,7 @@ class NominationController extends Controller
     public function update(Request $request, $id)
     {
         $form = $this->form(\App\Forms\NominationForm::class);
-
+ 
         // It will automatically use current request, get the rules, and do the validation
         if (!$form->isValid()) {
             return redirect()->back()->withErrors($form->getErrors())->withInput();
@@ -180,8 +180,8 @@ class NominationController extends Controller
         $form->redirectIfNotValid();
 
         $model = Nomination::findOrFail($id);
-
-        $model->update($form->getFieldValues());
+        $data = $form->getFieldValues();
+        $model->update($data);
 
         return redirect()->route('nominations.index');
     }

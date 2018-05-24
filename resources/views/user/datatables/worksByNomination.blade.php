@@ -19,6 +19,8 @@
 @stop
 
 @push('scripts')
+<script src="/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 <script>
 $(function() {
     $('#works-by-nomination-table').DataTable({

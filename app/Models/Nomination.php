@@ -39,7 +39,7 @@ class Nomination extends Model
     public function setFromTimeAttribute($value)
     {
         if ($value) {
-            $this->attributes['from_time'] =  Carbon::createFromFormat('Y-m-d\Th:m', $value);
+            $this->attributes['from_time'] =  Carbon::createFromFormat('Y-m-d\TH:i', $value);
         }
     }
 
@@ -52,7 +52,7 @@ class Nomination extends Model
     public function setToTimeAttribute($value)
     {
         if ($value) {
-            $this->attributes['to_time'] =  Carbon::createFromFormat('Y-m-d\Th:m', $value);
+            $this->attributes['to_time'] =  Carbon::createFromFormat('Y-m-d\TH:i', $value);
         }
     }
 }

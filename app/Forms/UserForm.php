@@ -13,8 +13,8 @@ class UserForm extends Form
             ->take(config('default.limit'))
             ->get();
         $choices = [];
-        foreach ($collection as $model) {
-            $choices[$model->name] = __($model->name);
+        foreach ($collection as $m) {
+            $choices[$m->name] = __($m->name);
         }
         $this
             ->add('name', 'text', ['label' => 'Имя', 'rules' => 'required|string|max:255'])

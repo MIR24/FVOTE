@@ -37,6 +37,8 @@ Route::middleware(['auth'])->group(function () {
         ->where('id', '[0-9]+')
         ->name('api.works.indexByNomination');
 
+    Route::get('/works/create/{Id}', 'WorkController@create')->where('id', '[0-9]+');
+
     Route::resource('users', 'UserController');
     Route::resource('nominations', 'NominationController');
     Route::resource('works', 'WorkController');

@@ -73,11 +73,11 @@ class WorkController extends Controller
      */
     public function indexByNomination($id)
     {
-        $layout = 'user.layouts.app';
+        $layout = 'user.layouts.appnew';
         $view = 'user.datatables.worksByNomination';
         $user = Auth::user();
         if ($user->getRoleNames()->contains('admin')) {
-            $layout = 'admin.layouts.app';
+            $layout = 'admin.layouts.appnew';
             $view = 'admin.datatables.worksByNomination';
         }
         $nomination = Nomination::find($id);
@@ -126,12 +126,13 @@ class WorkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(FormBuilder $formBuilder)
+    public function create($nomimation, FormBuilder $formBuilder)
     {
         $form = $formBuilder->create('App\Forms\WorkForm', [
             'method' => 'POST',
-            'url' => route('works.store')
-        ]);
+            'url' => route('works.store'),
+            
+        ],['nomimation' => $nomimation]);
 
         $params = [
             'form' => $form,
@@ -194,7 +195,7 @@ class WorkController extends Controller
             'method' => 'PUT',
             'url' => route('works.update', [$id]),
             'model' => $model,
-        ]);
+        ],['nomimation' => $model->nominations->first()->id]);
 
         $params = [
             'form' => $form,

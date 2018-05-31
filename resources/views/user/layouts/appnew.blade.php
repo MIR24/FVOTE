@@ -107,7 +107,9 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <li><a class="nav-link" href="{{ route('login') }}">{{ __('Authorization') }}</a></li>
                                         @else
                                         <li><a class="nav-link" href="{{ route('nominations.index') }}">{{ __('Nominations') }}</a></li>
+                                        @role('admin')
                                         <li><a class="nav-link" href="{{ route('users.index') }}">{{ __('Users') }}</a></li>
+                                        @endrole
                                         <li class="nav-item dropdown">
                                             @php $user = Auth::user() @endphp
                                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

@@ -15,6 +15,7 @@ class NominationForm extends Form
             ->add('status', 'choice', [
                 'label' => 'Статус',
                 'choices' => ['inactive' => 'Неактивна', 'active' => 'Активна'],
+                'selected' => 'inactive',
                 'choice_options' => [
                     'wrapper' => ['class' => 'choice-wrapper'],
                     'label_attr' => ['class' => 'label-class'],

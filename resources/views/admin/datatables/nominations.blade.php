@@ -39,7 +39,8 @@ $(function () {
             "info": "Всего _TOTAL_ номинаций",
             "infoEmpty": "Нечего показать",
             "emptyTable": "Ничего не нашел",
-            "zeroRecords": "Ничего не нашел"
+            "zeroRecords": "Ничего не нашел",
+            "infoFiltered": "(выбранно из _MAX_ записей)"
 
         },
         ajax: '{!! route('api.nominations.index') !!}',

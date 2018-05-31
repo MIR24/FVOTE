@@ -14,7 +14,7 @@
             <th style="width:200px">Начало</th>
             <th style="width:200px">Окончание</th>
             <th style="width:25px">Голосов</th>
-            <th style="width:250px">Действие</th>
+            <th style="width:300px">Действие</th>
         </tr>
     </thead>
 </table>
@@ -50,7 +50,7 @@ $(function () {
             {data: 'name', name: 'name'},
             {data: 'from_time', name: 'from_time'},
             {data: 'to_time', name: 'to_time'},
-            {data: 'votes', name: 'votes'},
+            {data: 'votes', name: 'votes', orderable: false},
             {data: 'action', name: 'action', orderable: false, searchable: false}
         ],
         lengthMenu: [
@@ -68,7 +68,7 @@ $(function () {
             },
             {"render": function (data, type, row) {
                         return '<a href="/nominations/'+data+'/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>' +
-                                '<a href="/nominations/'+data+'/works" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Варианты</a>';
+                                '<a href="/nominations/'+data+'/works" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Варианты ответов</a>';
                 }, "targets": 6
             }
 

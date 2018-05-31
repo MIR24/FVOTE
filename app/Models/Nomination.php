@@ -17,7 +17,7 @@ class Nomination extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'status', 'from_time', 'to_time'
+        'name', 'status', 'from_time', 'to_time','ntype'
     ];
 
     public function competitions()

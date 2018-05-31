@@ -12,6 +12,7 @@ use Kris\LaravelFormBuilder\FormBuilderTrait;
 
 class WorkController extends Controller
 {
+
     use FormBuilderTrait;
 
     /**
@@ -30,11 +31,10 @@ class WorkController extends Controller
         $view = 'admin.datatables.works';
 
         return view(
-            $view,
-            [
-                'layout' => $layout,
-                'title' => 'Работы'
-            ]
+                $view, [
+            'layout' => $layout,
+            'title' => 'Работы'
+                ]
         );
     }
 
@@ -47,23 +47,23 @@ class WorkController extends Controller
     {
         $user = Auth::user();
         $builder = CompetitiveWork::select([
-            'id',
-            'filial',
-            'name',
-            'url',
-            'correspondent',
-            'operator'
+                    'id',
+                    'filial',
+                    'name',
+                    'url',
+                    'correspondent',
+                    'operator'
         ]);
 
         return Datatables::of($builder)
-            ->addColumn('edit', function ($work) {
-                return '<a href="'.route('works.edit', [$work->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
-            })
-            ->editColumn('url', function ($work) {
-                return $work->link;
-            })
-            ->rawColumns(['url', 'action', 'edit'])
-            ->make(true);
+                        ->addColumn('edit', function ($work) {
+                            return '<a href="' . route('works.edit', [$work->id]) . '" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
+                        })
+                        ->editColumn('url', function ($work) {
+                            return $work->link;
+                        })
+                        ->rawColumns(['url', 'action', 'edit'])
+                        ->make(true);
     }
 
     /**
@@ -74,20 +74,31 @@ class WorkController extends Controller
     public function indexByNomination($id)
     {
         $layout = 'user.layouts.appnew';
-        $view = 'user.datatables.worksByNomination';
         $user = Auth::user();
+        $nomination = Nomination::find($id);
+        $view = 'user.datatables.worksByNomination';
+        if ($nomination->ntype == 1) {
+            $view = 'user.datatables.worksByNomination';
+        }
+        else {
+            $view = 'user.datatables.worksByNominationLongread';
+        }
         if ($user->getRoleNames()->contains('admin')) {
             $layout = 'admin.layouts.appnew';
-            $view = 'admin.datatables.worksByNomination';
+            if ($nomination->ntype == 1) {
+                $view = 'admin.datatables.worksByNomination';
+            }
+            else {
+                $view = 'admin.datatables.worksByNominationLongread';
+            }
         }
-        $nomination = Nomination::find($id);
+
         return view(
-            $view,
-            [
-                'layout' => $layout,
-                'title' => 'Работы в номинации '.$nomination->name,
-                'model' => $nomination
-            ]
+                $view, [
+            'layout' => $layout,
+            'title' => 'Работы в номинации ' . $nomination->name,
+            'model' => $nomination
+                ]
         );
     }
 
@@ -102,23 +113,23 @@ class WorkController extends Controller
         $nomination = Nomination::findOrFail($id);
         $builder = $nomination->competitiveWorks()->select('id', 'filial', 'name', 'url', 'correspondent', 'operator');
         return Datatables::of($builder)
-            ->addColumn('action', function ($work) use ($id) {
-                return '<a href="'.route('works.thumbsUp', [$id, $work->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-thumbs-up"></i> Нравится</a>';
-            })
-            ->addColumn('edit', function ($work) {
-                return '<a href="'.route('works.edit', [$work->id]).'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
-            })
-            ->addColumn('votes', function ($work) {
-                return $work->countUpVoters();
-            })
-            ->setRowClass(function ($work) use ($user) {
-                return $user->hasUpVoted($work) ? 'bg-success' : '';
-            })
-            ->editColumn('url', function ($work) {
-                return $work->link;
-            })
-            ->rawColumns(['url', 'action', 'edit'])
-            ->make(true);
+                        ->addColumn('action', function ($work) use ($id,$user) {
+                            return '<a href="' . route('works.thumbsUp', [$id, $work->id]) . '" class="btn  btn-primary">&nbsp;<i class="glyphicon '. ($user->hasUpVoted($work) ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down') .'"></i>&nbsp;</a>';
+                        })
+                        ->addColumn('edit', function ($work) {
+                            return '<a href="' . route('works.edit', [$work->id]) . '" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
+                        })
+                        ->addColumn('votes', function ($work) {
+                            return $work->countUpVoters();
+                        })
+                        ->setRowClass(function ($work) use ($user) {
+                            return $user->hasUpVoted($work) ? 'bg-success' : '';
+                        })
+                        ->editColumn('url', function ($work) {
+                            return $work->link;
+                        })
+                        ->rawColumns(['url', 'action', 'edit'])
+                        ->make(true);
     }
 
     /**
@@ -126,19 +137,25 @@ class WorkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($nomimation, FormBuilder $formBuilder)
+    public function create($nomimationId, FormBuilder $formBuilder)
     {
-        $form = $formBuilder->create('App\Forms\WorkForm', [
+        $nomimation = Nomination::find($nomimationId);
+        $form = 'App\Forms\WorkForm';
+        if ($nomimation->ntype == 1) {
+            $form = 'App\Forms\WorkForm';
+        }
+        if ($nomimation->ntype == 2) {
+            $form = 'App\Forms\WorkFormLongread';
+        }
+        $form = $formBuilder->create($form, [
             'method' => 'POST',
             'url' => route('works.store'),
-            
-        ],['nomimation' => $nomimation]);
+                ], ['nomimation' => $nomimationId]);
 
         $params = [
             'form' => $form,
             'cardHeader' => 'Создание Работы'
         ];
-
         return view('admin.forms.default', $params);
     }
 
@@ -164,7 +181,8 @@ class WorkController extends Controller
         $model = CompetitiveWork::create($data);
         if ($data['nomimation'] > 0) {
             $model->nominations()->sync([$data['nomimation']]);
-        } else {
+        }
+        else {
             $model->nominations()->sync();
         }
 
@@ -191,11 +209,19 @@ class WorkController extends Controller
     public function edit($id, FormBuilder $formBuilder)
     {
         $model = CompetitiveWork::findOrFail($id);
-        $form = $formBuilder->create('App\Forms\WorkForm', [
+        $nomination = $model->nominations->first();
+        $form = 'App\Forms\WorkForm';
+        if ($nomination->ntype == 1) {
+            $form = 'App\Forms\WorkForm';
+        }
+        if ($nomination->ntype == 2) {
+            $form = 'App\Forms\WorkFormLongread';
+        }
+        $form = $formBuilder->create($form, [
             'method' => 'PUT',
             'url' => route('works.update', [$id]),
             'model' => $model,
-        ],['nomimation' => $model->nominations->first()->id]);
+                ], ['nomimation' => $nomination->id]);
 
         $params = [
             'form' => $form,
@@ -230,7 +256,8 @@ class WorkController extends Controller
         $model->update($data);
         if ($data['nomimation'] > 0) {
             $model->nominations()->sync([$data['nomimation']]);
-        } else {
+        }
+        else {
             $model->nominations()->sync();
         }
 
@@ -268,4 +295,5 @@ class WorkController extends Controller
 
         return back();
     }
+
 }

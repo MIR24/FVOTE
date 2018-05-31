@@ -150,7 +150,7 @@ class NominationController extends Controller
             'method' => 'PUT',
             'url' => route('nominations.update', [$id]),
             'model' => $model,
-        ]);
+        ],['model' => $model]);
 
         $params = [
             'form' => $form,

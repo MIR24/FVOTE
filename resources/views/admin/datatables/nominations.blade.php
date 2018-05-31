@@ -29,6 +29,7 @@ $(function () {
     $('#nominations-table').DataTable({
         processing: true,
         serverSide: true,
+        "order": [[ 0, "desc" ]],
         language: {
             // metronic spesific
             "metronicGroupActions": " _TOTAL_ номинаций ",

@@ -1,7 +1,7 @@
 @extends($layout)
 
 @section('toolBar')
-<a href="{{ route('works.create').'/'.$model->id }}" class="btn btn-primary" role="button">Создать</a>
+<a href="{{ route('works.create').'/'.$model->id }}" class="btn btn-primary" role="button">Добавить вариант ответа</a>
 @stop
 @section('content')
 <table class="table table-bordered" id="works-by-nomination-table">

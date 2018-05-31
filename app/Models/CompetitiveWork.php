@@ -8,8 +8,10 @@ use Jcc\LaravelVote\CanBeVoted;
 
 class CompetitiveWork extends Model
 {
+
     use SoftDeletes;
-    use CanBeVoted;
+
+use CanBeVoted;
 
     protected $vote = User::class;
     protected $dates = ['deleted_at'];
@@ -35,6 +37,11 @@ class CompetitiveWork extends Model
 
     public function getLinkAttribute()
     {
-        return "<a href='{$this->url}' target='_blank'>{$this->url}</a>";
+        $url = $this->url;
+        if (substr($url, 0, 5) != "http:" && substr($url, 0, 6) != "https:") {
+            $url = "http://" . $url;
+        }
+        return "<a href='{$url}' target='_blank'>{$this->url}</a>";
     }
+
 }

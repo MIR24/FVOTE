@@ -78,7 +78,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <span class="username username-hide-mobile">
                                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                                onclick="event.preventDefault();
-                                                   document.getElementById('logout-form').submit();">{{ __($user->getRoleNames()->first()).'@'.$user->name }}</a>
+                                                   document.getElementById('logout-form').submit();">{{ $user->name }}</a>
                                             </span>
 
                                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -110,24 +110,6 @@ License: You must have a valid license purchased only from themeforest(the above
                                         @role('admin')
                                         <li><a class="nav-link" href="{{ route('users.index') }}">{{ __('Users') }}</a></li>
                                         @endrole
-                                        <li class="nav-item dropdown">
-                                            @php $user = Auth::user() @endphp
-                                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                                {{ __($user->getRoleNames()->first()).'@'.$user->name }} <span class="caret"></span>
-                                            </a>
-
-                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                                   onclick="event.preventDefault();
-                                                           document.getElementById('logout-form').submit();">
-                                                    {{ __('Logout') }}
-                                                </a>
-
-                                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                                    @csrf
-                                                </form>
-                                            </div>
-                                        </li>
                                         @endguest
                                     </ul>
                                 </div>

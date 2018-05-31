@@ -171,7 +171,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <div class="row">
                                 <div class="col-md-3 col-sm-6 col-xs-12 footer-block">
                                     <h2>О сайте</h2>
-                                    <p> Творческий конкурст МГТРК МИР. </p>
+                                    <p> Творческий конкурст МТРК "МИР". </p>
                                 </div>
                                 <div class="col-md-3 col-sm-6 col-xs-12 footer-block">
                                     <h2>Контакты</h2>
@@ -186,7 +186,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <!-- END PRE-FOOTER -->
                     <!-- BEGIN INNER FOOTER -->
                     <div class="page-footer">
-                        <div class="container"> 2018 &copy; МГТРК МИР
+                        <div class="container"> 2018 &copy; МТРК "МИР"
                         </div>
                     </div>
                     <div class="scroll-to-top">

@@ -46,7 +46,7 @@
         ],
             ajax: '{!! route('api.works.indexByNomination', ['id' => $model->id]) !!}',
             columns: [
-            { data: 'id', name: 'id' },
+            { data: 'id', name: 'id',visible: false },
             { data: 'filial', name: 'filial' },
             { data: 'name', name: 'name' },
             { data: 'url', name: 'url' },

@@ -10,8 +10,8 @@ class WorkForm extends Form
     public function buildForm()
     {
         $this
-            ->add('name', 'text', ['label' => 'Имя', 'rules' => 'required|string|max:255'])
-            ->add('url', 'text', ['label' => 'Ссылка на сюжет', 'rules' => 'required|string|max:255'])
+            ->add('name', 'text', ['label' => 'Месяц: Название сюжета', 'rules' => 'required|string|max:255'])
+            ->add('url', 'text', ['label' => 'Ссылка', 'rules' => 'required|string|max:255'])
             ->add('filial', 'text', ['label' => 'Филиал', 'rules' => 'required|string|max:255'])
             ->add('correspondent', 'text', ['label' => 'Корреспондент', 'rules' => 'required|string|max:255'])
             ->add('operator', 'text', ['label' => 'Оператор', 'rules' => 'required|string|max:255'])

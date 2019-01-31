@@ -10,7 +10,7 @@ class WorkFormLongread extends Form
     public function buildForm()
     {
         $this
-            ->add('name', 'text', ['label' => 'Заголовок', 'rules' => 'required|string|max:255'])
+            ->add('name', 'text', ['label' => 'Месяц: Заголовок', 'rules' => 'required|string|max:255'])
             ->add('url', 'text', ['label' => 'Ссылка', 'rules' => 'required|string|max:255'])
             ->add('filial', 'text', ['label' => 'Филиал', 'rules' => 'required|string|max:255'])
             ->add('correspondent', 'text', ['label' => 'Автор текста', 'rules' => 'required|string|max:255'])

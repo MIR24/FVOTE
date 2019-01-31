@@ -14,19 +14,18 @@ class NominationForm extends Form
         if (!is_object($model)) {
             $this->add('ntype', 'choice', [
                 'label' => 'Тип номинации',
-                'choices' => [1 => 'Сюжет', 2 => 'Лонгрид'],
+                'choices' => config('ntype.name'),
                 'selected' => 1,
                 'choice_options' => [
                     'wrapper' => ['class' => 'choice-wrapper'],
                     'label_attr' => ['class' => 'label-class'],
                 ],
             ]);
-        }
-        else {
+        } else {
             $this->add('Тип номинации', 'static', [
                 'tag' => 'div', // Tag to be used for holding static data,
                 'attr' => ['class' => 'form-control-static'], // This is the default
-                'value' => $model->ntype == 1 ? 'Сюжет' : 'Лонгрид'
+                'value' => config('ntype.name')[$model->ntype]
             ]);
             $this->add('ntype', 'hidden');
         }
@@ -46,5 +45,4 @@ class NominationForm extends Form
                 ->add('submit', 'submit', ['label' => 'Принять'])
                 ->add('reset', 'reset', ['label' => 'Очистить']);
     }
-
 }

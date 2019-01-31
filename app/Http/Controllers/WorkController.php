@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\CompetitiveWork;
 use App\Nomination;
+use App\User;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Auth;
 use Kris\LaravelFormBuilder\FormBuilder;
 use Kris\LaravelFormBuilder\FormBuilderTrait;
 
-class WorkController extends Controller
-{
+class WorkController extends Controller {
 
     use FormBuilderTrait;
 
@@ -20,8 +20,7 @@ class WorkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         $user = Auth::user();
         if (!$user->getRoleNames()->contains('admin')) {
             return redirect('/');
@@ -43,8 +42,7 @@ class WorkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexDT()
-    {
+    public function indexDT() {
         $user = Auth::user();
         $builder = CompetitiveWork::select([
                     'id',
@@ -71,24 +69,21 @@ class WorkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexByNomination($id)
-    {
+    public function indexByNomination($id) {
         $layout = 'user.layouts.appnew';
         $user = Auth::user();
         $nomination = Nomination::find($id);
         $view = 'user.datatables.worksByNomination';
         if ($nomination->ntype == 1) {
             $view = 'user.datatables.worksByNomination';
-        }
-        else {
+        } else {
             $view = 'user.datatables.worksByNominationLongread';
         }
         if ($user->getRoleNames()->contains('admin')) {
             $layout = 'admin.layouts.appnew';
             if ($nomination->ntype == 1) {
                 $view = 'admin.datatables.worksByNomination';
-            }
-            else {
+            } else {
                 $view = 'admin.datatables.worksByNominationLongread';
             }
         }
@@ -107,14 +102,13 @@ class WorkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexByNominationDT($id)
-    {
+    public function indexByNominationDT($id) {
         $user = Auth::user();
         $nomination = Nomination::findOrFail($id);
         $builder = $nomination->competitiveWorks()->select('id', 'filial', 'name', 'url', 'correspondent', 'operator');
         return Datatables::of($builder)
-                        ->addColumn('action', function ($work) use ($id,$user) {
-                            return '<a href="' . route('works.thumbsUp', [$id, $work->id]) . '" class="btn  btn-primary">&nbsp;<i class="glyphicon '. ($user->hasUpVoted($work) ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down') .'"></i>&nbsp;</a>';
+                        ->addColumn('action', function ($work) use ($id, $user) {
+                            return '<a href="' . route('works.thumbsUp', [$id, $work->id]) . '" class="btn  btn-primary">&nbsp;<i class="glyphicon ' . ($user->hasUpVoted($work) ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down') . '"></i>&nbsp;</a>';
                         })
                         ->addColumn('edit', function ($work) {
                             return '<a href="' . route('works.edit', [$work->id]) . '" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>';
@@ -137,8 +131,7 @@ class WorkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($nomimationId, FormBuilder $formBuilder)
-    {
+    public function create($nomimationId, FormBuilder $formBuilder) {
         $nomimation = Nomination::find($nomimationId);
         $form = 'App\Forms\WorkForm';
         if ($nomimation->ntype == 1) {
@@ -165,8 +158,7 @@ class WorkController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $form = $this->form(\App\Forms\WorkForm::class);
 
         // It will automatically use current request, get the rules, and do the validation
@@ -181,8 +173,7 @@ class WorkController extends Controller
         $model = CompetitiveWork::create($data);
         if ($data['nomimation'] > 0) {
             $model->nominations()->sync([$data['nomimation']]);
-        }
-        else {
+        } else {
             $model->nominations()->sync();
         }
 
@@ -195,8 +186,7 @@ class WorkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
@@ -206,8 +196,7 @@ class WorkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id, FormBuilder $formBuilder)
-    {
+    public function edit($id, FormBuilder $formBuilder) {
         $model = CompetitiveWork::findOrFail($id);
         $nomination = $model->nominations->first();
         $form = 'App\Forms\WorkForm';
@@ -238,8 +227,7 @@ class WorkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $form = $this->form(\App\Forms\WorkForm::class);
 
         // It will automatically use current request, get the rules, and do the validation
@@ -256,8 +244,7 @@ class WorkController extends Controller
         $model->update($data);
         if ($data['nomimation'] > 0) {
             $model->nominations()->sync([$data['nomimation']]);
-        }
-        else {
+        } else {
             $model->nominations()->sync();
         }
 
@@ -270,13 +257,11 @@ class WorkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         //
     }
 
-    public function thumbsUp($nId, $wId)
-    {
+    public function thumbsUp($nId, $wId) {
         $nomination = Nomination::find($nId);
         if ($nomination->status !== 'active') {
             return back();
@@ -294,6 +279,41 @@ class WorkController extends Controller
         $user->upVote($work);
 
         return back();
+    }
+
+    public function printResult($id) {
+        $user = Auth::user();
+        $nomination = Nomination::findOrFail($id);
+        $count = 0;
+        $voters = [];
+        $users = User::where("status", "active")->get();
+        foreach ($users as $voter) {
+            if ($voter->getRoleNames()->contains('admin'))
+                continue;
+            $voters[$voter->name] = $voter->name;
+        }
+
+        foreach ($nomination->competitiveWorks as $work) {
+            $count += $work->countUpVoters();
+            $work->count = $work->countUpVoters();
+            $work->voters = $work->voters()->get();
+            foreach ($work->voters as $voter) {
+                unset($voters[$voter->name]);
+            }
+        }
+
+
+        //dump($nomination);
+        $layout = 'admin.layouts.appnew';
+        $view = 'admin.result.bynominations';
+        return view(
+                $view, [
+            'layout' => $layout,
+            'nomination' => $nomination,
+            'count' => $count,
+            'dontVoted' => $voters
+                ]
+        );
     }
 
 }

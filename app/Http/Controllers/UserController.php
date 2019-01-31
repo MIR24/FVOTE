@@ -105,7 +105,7 @@ class UserController extends Controller
             'method' => 'PUT',
             'url' => route('users.update', [$id]),
             'model' => $model,
-        ]);
+        ],['role' => $model->role]);
         $params = [
             'form' => $form,
             'cardHeader' => 'Редактирование Пользователя'

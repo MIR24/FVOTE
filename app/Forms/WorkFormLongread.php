@@ -15,7 +15,7 @@ class WorkFormLongread extends Form
             ->add('filial', 'text', ['label' => 'Филиал', 'rules' => 'required|string|max:255'])
             ->add('correspondent', 'text', ['label' => 'Автор текста', 'rules' => 'required|string|max:255'])
             ->add('operator', 'text', ['label' => 'Автор фото', 'rules' => 'required|string|max:255'])
-            ->add('nomimation', 'hidden', ['value' => $this->getData('nomimation')])
+            ->add('nomination', 'hidden', ['value' => $this->getData('nomination')])
             ->add('submit', 'submit', ['label' => 'Принять'])
             ->add('reset', 'reset', ['label' => 'Очистить']);
     }

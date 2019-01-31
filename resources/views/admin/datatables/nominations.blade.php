@@ -14,7 +14,7 @@
             <th style="width:200px">Начало</th>
             <th style="width:200px">Окончание</th>
             <th style="width:25px">Голосов</th>
-            <th style="width:300px">Действие</th>
+            <th style="width:200px">Действие</th>
         </tr>
     </thead>
 </table>
@@ -68,8 +68,9 @@ $(function () {
                 }, "targets": 1
             },
             {"render": function (data, type, row) {
-                        return '<a href="/nominations/'+data+'/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>' +
-                                '<a href="/nominations/'+data+'/works" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Варианты ответов</a>';
+                        return '<div class="btn-group-vertical" role="group" aria-label="..."><a href="/nominations/'+data+'/edit" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i> Редактировать</a>' +
+                                '<a href="/nominations/'+data+'/works" class="btn  btn-primary"><i class="glyphicon glyphicon-question-sign"></i> Варианты ответов</a>'+
+                                '<a href="/nominations/'+data+'/result" class="btn  btn-primary"><i class="glyphicon glyphicon-th-list"></i> Статистика</a></div>';
                 }, "targets": 6
             }
 

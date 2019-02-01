@@ -41,6 +41,7 @@
                 [50, 100, 250, 500],
                 [50, 100, 250, 500] // change per page values here
             ],
+            "iDisplayLength": 100,
             ajax: '{!! route('api.works.indexByNomination', ['id' => $model->id]) !!}',
             columns: [
             { data: 'filial', name: 'filial' },

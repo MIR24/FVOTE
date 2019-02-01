@@ -39,7 +39,7 @@ $(function() {
             "infoFiltered": "(выбранно из _MAX_ записей)"
 
         },
-         lengthMenu: [
+        lengthMenu: [
             [50, 100, 250, 500],
             [50, 100, 250, 500] // change per page values here
         ],

@@ -41,6 +41,10 @@ $(function () {
             "zeroRecords": "Ничего не нашел"
 
         },
+        lengthMenu: [
+            [50, 100, 250, 500],
+            [50, 100, 250, 500] // change per page values here
+        ],
         ajax: '{!! route('api.works.indexByNomination', ['id' => $model->id]) !!}',
         columns: [
             {data: 'name', name: 'name'},

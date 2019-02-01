@@ -39,10 +39,11 @@
                     "infoFiltered": "(выбранно из _MAX_ записей)"
 
             },
-                    lengthMenu: [
-            [50, 100, 250, 500],
-            [50, 100, 250, 500] // change per page values here
-        ],
+            lengthMenu: [
+                [50, 100, 250, 500],
+                [50, 100, 250, 500] // change per page values here
+            ],
+            "iDisplayLength": 100,
             ajax: '{!! route('api.works.indexByNomination', ['id' => $model->id]) !!}',
             columns: [
             { data: 'name', name: 'name' },

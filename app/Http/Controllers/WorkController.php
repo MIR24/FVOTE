@@ -31,10 +31,11 @@ class WorkController extends Controller
         $view = 'admin.datatables.works';
 
         return view(
-                $view, [
-            'layout' => $layout,
-            'title' => 'Работы'
-                ]
+            $view,
+            [
+                'layout' => $layout,
+                'title' => 'Работы'
+            ]
         );
     }
 
@@ -76,29 +77,19 @@ class WorkController extends Controller
         $layout = 'user.layouts.appnew';
         $user = Auth::user();
         $nomination = Nomination::find($id);
-        $view = 'user.datatables.worksByNomination';
-        if ($nomination->ntype == 1) {
-            $view = 'user.datatables.worksByNomination';
-        }
-        else {
-            $view = 'user.datatables.worksByNominationLongread';
-        }
+        $view = config('ntype.view')[$nomination->ntype];
         if ($user->getRoleNames()->contains('admin')) {
             $layout = 'admin.layouts.appnew';
-            if ($nomination->ntype == 1) {
-                $view = 'admin.datatables.worksByNomination';
-            }
-            else {
-                $view = 'admin.datatables.worksByNominationLongread';
-            }
+            $view = config('ntype.viewAdmin')[$nomination->ntype];
         }
 
         return view(
-                $view, [
-            'layout' => $layout,
-            'title' => 'Работы в номинации ' . $nomination->name,
-            'model' => $nomination
-                ]
+            $view,
+            [
+                'layout' => $layout,
+                'title' => 'Работы в номинации ' . $nomination->name,
+                'model' => $nomination
+            ]
         );
     }
 
@@ -113,7 +104,7 @@ class WorkController extends Controller
         $nomination = Nomination::findOrFail($id);
         $builder = $nomination->competitiveWorks()->select('id', 'filial', 'name', 'url', 'correspondent', 'operator');
         return Datatables::of($builder)
-                        ->addColumn('action', function ($work) use ($id,$user) {
+                        ->addColumn('action', function ($work) use ($id, $user) {
                             return '<a href="' . route('works.thumbsUp', [$id, $work->id]) . '" class="btn  btn-primary">&nbsp;<i class="glyphicon '. ($user->hasUpVoted($work) ? 'glyphicon-thumbs-up' : 'glyphicon-thumbs-down') .'"></i>&nbsp;</a>';
                         })
                         ->addColumn('edit', function ($work) {
@@ -137,20 +128,14 @@ class WorkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($nomimationId, FormBuilder $formBuilder)
+    public function create($nominationId, FormBuilder $formBuilder)
     {
-        $nomimation = Nomination::find($nomimationId);
-        $form = 'App\Forms\WorkForm';
-        if ($nomimation->ntype == 1) {
-            $form = 'App\Forms\WorkForm';
-        }
-        if ($nomimation->ntype == 2) {
-            $form = 'App\Forms\WorkFormLongread';
-        }
+        $nomination = Nomination::find($nominationId);
+        $form = config('ntype.form')[$nomination->ntype];
         $form = $formBuilder->create($form, [
             'method' => 'POST',
             'url' => route('works.store'),
-                ], ['nomimation' => $nomimationId]);
+                ], ['nomination' => $nominationId]);
 
         $params = [
             'form' => $form,
@@ -167,7 +152,17 @@ class WorkController extends Controller
      */
     public function store(Request $request)
     {
-        $form = $this->form(\App\Forms\WorkForm::class);
+        $nominationId = $request->input('nomination');
+
+        if (empty($nominationId)) {
+            return redirect()->back()->withInput();
+        }
+
+        $nomination = Nomination::find($nominationId);
+
+        $formClassName = config('ntype.form')[$nomination->ntype];
+
+        $form = $this->form($formClassName);
 
         // It will automatically use current request, get the rules, and do the validation
         if (!$form->isValid()) {
@@ -179,10 +174,9 @@ class WorkController extends Controller
 
         $data = $form->getFieldValues();
         $model = CompetitiveWork::create($data);
-        if ($data['nomimation'] > 0) {
-            $model->nominations()->sync([$data['nomimation']]);
-        }
-        else {
+        if ($data['nomination'] > 0) {
+            $model->nominations()->sync([$data['nomination']]);
+        } else {
             $model->nominations()->sync();
         }
 
@@ -210,18 +204,12 @@ class WorkController extends Controller
     {
         $model = CompetitiveWork::findOrFail($id);
         $nomination = $model->nominations->first();
-        $form = 'App\Forms\WorkForm';
-        if ($nomination->ntype == 1) {
-            $form = 'App\Forms\WorkForm';
-        }
-        if ($nomination->ntype == 2) {
-            $form = 'App\Forms\WorkFormLongread';
-        }
+        $form = config('ntype.form')[$nomination->ntype];
         $form = $formBuilder->create($form, [
             'method' => 'PUT',
             'url' => route('works.update', [$id]),
             'model' => $model,
-                ], ['nomimation' => $nomination->id]);
+                ], ['nomination' => $nomination->id]);
 
         $params = [
             'form' => $form,
@@ -240,7 +228,17 @@ class WorkController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $form = $this->form(\App\Forms\WorkForm::class);
+        $nominationId = $request->input('nomination');
+
+        if (empty($nominationId)) {
+            return redirect()->back()->withInput();
+        }
+
+        $nomination = Nomination::find($nominationId);
+
+        $formClassName = config('ntype.form')[$nomination->ntype];
+
+        $form = $this->form($formClassName);
 
         // It will automatically use current request, get the rules, and do the validation
         if (!$form->isValid()) {
@@ -254,10 +252,9 @@ class WorkController extends Controller
 
         $data = $form->getFieldValues();
         $model->update($data);
-        if ($data['nomimation'] > 0) {
-            $model->nominations()->sync([$data['nomimation']]);
-        }
-        else {
+        if ($data['nomination'] > 0) {
+            $model->nominations()->sync([$data['nomination']]);
+        } else {
             $model->nominations()->sync();
         }
 
@@ -295,5 +292,4 @@ class WorkController extends Controller
 
         return back();
     }
-
 }

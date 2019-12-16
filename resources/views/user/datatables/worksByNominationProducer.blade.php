@@ -4,11 +4,9 @@
 <table class="table table-bordered" id="works-by-nomination-table">
     <thead>
         <tr>
-            <th>Месяц: Заголовок</th>
-            <th>Ссылка</th>
             <th>Филиал</th>
-            <th>Автор текста</th>
-            <th>Автор фото</th>
+            <th>Номинант</th>
+            <th>Обоснование</th>
             @if ($model->status == 'active')
             <th>Голосование</th>
             @endif
@@ -41,11 +39,9 @@
             },
             ajax: '{!! route('api.works.indexByNomination', ['id' => $model->id]) !!}',
             columns: [
-            { data: 'name', name: 'name' },
-            { data: 'url', name: 'url' },
             { data: 'filial', name: 'filial' },
             { data: 'correspondent', name: 'correspondent' },
-            { data: 'operator', name: 'operator' } @if ($model->status == 'active'),
+            { data: 'name', name: 'name' } @if ($model->status == 'active'),
             { data: 'action', name: 'action', orderable: false, searchable: false } @endif
             ]
     });

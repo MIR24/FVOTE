@@ -1,27 +1,29 @@
 @extends($layout)
 
+@section('toolBar')
+<a href="{{ route('works.create').'/'.$model->id }}" class="btn btn-primary" role="button">Добавить вариант ответа</a>
+@stop
 @section('content')
-    <table class="table table-bordered" id="works-by-nomination-table">
-        <thead>
-            <tr>
-                <th>Месяц: Название сюжета</th>
-                <th>Ссылка</th>
-                <th>Филиал</th>
-                <th>Корреспондент</th>
-                <th>Оператор</th>
-                @if ($model->status == 'active')
-                <th>Голосование</th>
-                @endif
-            </tr>
-        </thead>
-    </table>
+<table class="table table-bordered" id="works-by-nomination-table">
+    <thead>
+        <tr>
+            <th>Филиал</th>
+            <th>Номинант</th>
+            <th>Ссылка на сюжеты</th>
+            <th>Обоснование</th>
+            <th>Голоса</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+</table>
 @stop
 
 @push('scripts')
 <script src="/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+
 <script>
-$(function() {
+$(function () {
     $('#works-by-nomination-table').DataTable({
         processing: true,
         serverSide: true,
@@ -35,18 +37,17 @@ $(function() {
             "info": "Всего _TOTAL_ номинаций",
             "infoEmpty": "Нечего показать",
             "emptyTable": "Ничего не нашел",
-            "zeroRecords": "Ничего не нашел",
-            "infoFiltered": "(выбранно из _MAX_ записей)"
+            "zeroRecords": "Ничего не нашел"
 
         },
         ajax: '{!! route('api.works.indexByNomination', ['id' => $model->id]) !!}',
         columns: [
-            { data: 'name', name: 'name' },
-            { data: 'url', name: 'url' },
-            { data: 'filial', name: 'filial' },
-            { data: 'correspondent', name: 'correspondent' },
-            { data: 'operator', name: 'operator' } @if ($model->status == 'active'),
-            { data: 'action', name: 'action', orderable: false, searchable: false } @endif
+            {data: 'filial', name: 'filial'},
+            {data: 'correspondent', name: 'correspondent'},
+            {data: 'url', name: 'url'},
+            {data: 'name', name: 'name'},
+            {data: 'votes', name: 'votes', orderable: false, searchable: false},
+            {data: 'edit', name: 'edit', orderable: false, searchable: false}
         ]
     });
 });

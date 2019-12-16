@@ -186,7 +186,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <!-- END PRE-FOOTER -->
                     <!-- BEGIN INNER FOOTER -->
                     <div class="page-footer">
-                        <div class="container"> 2018 &copy; МТРК "МИР"
+                        <div class="container"> {{ date("Y") }} &copy; МТРК "МИР"
                         </div>
                     </div>
                     <div class="scroll-to-top">

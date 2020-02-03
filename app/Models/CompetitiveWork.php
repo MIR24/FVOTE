@@ -41,7 +41,7 @@ use CanBeVoted;
         if (substr($url, 0, 5) != "http:" && substr($url, 0, 6) != "https:") {
             $url = "http://" . $url;
         }
-        return "<a href='{$url}' target='_blank'>{$this->url}</a>";
+        return "<a href='{$url}' target='_blank'>Перейти по ссылке</a>";
     }
 
 }
